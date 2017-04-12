@@ -19,5 +19,15 @@
 </description>
     </item>
     
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Sat, 20 Jun 2015 14:02:37 +0200</pubDate>
+      
+      <guid>/about/</guid>
+      <description>&lt;p&gt;My name is Arlo.&lt;/p&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
