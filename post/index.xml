@@ -21,8 +21,7 @@
 
 &lt;h2 id=&#34;what-is-hugo-and-github-pages&#34;&gt;What is Hugo and Github Pages&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/arlomurray/blog-hugo/images/hugo.png&#34; alt=&#34;Hugo&#34; /&gt;
-Hugo is a static website generator, which makes it ideal for creating things like blogs, personal websites, or any other site that does not require dynamic content. It is very simple to install and configure on any operating system, be hosted anywhere, is incredibly fast, &lt;em&gt;and&lt;/em&gt; it is written in the Go programming language. Being quite a avid fan/user of Go, I was naturally drawn to the platform. It also seemed easier to use than Wordpress, which I&amp;rsquo;ve had my fair share of bouts with in the past. On top of all that, Hugo is a free platform.&lt;/p&gt;
+&lt;p&gt;Hugo is a static website generator, which makes it ideal for creating things like blogs, personal websites, or any other site that does not require dynamic content. It is very simple to install and configure on any operating system, be hosted anywhere, is incredibly fast, &lt;em&gt;and&lt;/em&gt; it is written in the Go programming language. Being quite a avid fan/user of Go, I was naturally drawn to the platform. It also seemed easier to use than Wordpress, which I&amp;rsquo;ve had my fair share of bouts with in the past. On top of all that, Hugo is a free platform.&lt;/p&gt;
 
 &lt;p&gt;However, since Hugo only generates static pages, the site needs to be hosted by another service. (Hugo actually can serve websites, but it does not seem to be a popular option.) In my case, this is where Github Pages comes into play. Anyone that has used Github or follows blogs of programmers have probably heard of Github Pages. Hosting a site on GP is also free, plus the site can have a custom domain and be secured with HTTPS. Full Disclosure: I&amp;rsquo;ve heard mixed reviews about Github Pages, but decided to give it a shot.&lt;/p&gt;
 
