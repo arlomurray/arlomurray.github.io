@@ -1,0 +1,245 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Arlo Murray">
+		<meta name="description" content="Describe your website">
+		<meta name="generator" content="Hugo 0.19" />
+		<title>Setting up a blog with Github Pages and Hugo &middot; Arlo Murray</title>
+		<link rel="shortcut icon" href="/images/favicon.ico">
+		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="/css/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='/post'>Archive</a>
+	<a href='/tags'>Tags</a>
+	<a href='/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        
+                            Setting up a blog with Github Pages and Hugo
+                        
+                    </h1>
+                    <h2 class="headline">
+                    Apr 12, 2017 12:53
+                    · 1147 words
+                    · 6 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    
+
+<p>As the topic is still fresh on my mind from creating this blog, I thought I would write a quick post on how others can create their own.</p>
+
+<h2 id="what-is-hugo-and-github-pages">What is Hugo and Github Pages</h2>
+
+<p><img src="https://github.com/arlomurray/blog-hugo/public/images/hugo.png" alt="Hugo" title="Hugo Platform" />
+Hugo is a static website generator, which makes it ideal for creating things like blogs, personal websites, or any other site that does not require dynamic content. It is very simple to install and configure on any operating system, be hosted anywhere, is incredibly fast, <em>and</em> it is written in the Go programming language. Being quite a avid fan/user of Go, I was naturally drawn to the platform. It also seemed easier to use than Wordpress, which I&rsquo;ve had my fair share of bouts with in the past. On top of all that, Hugo is a free platform.</p>
+
+<p>However, since Hugo only generates static pages, the site needs to be hosted by another service. (Hugo actually can serve websites, but it does not seem to be a popular option.) In my case, this is where Github Pages comes into play. Anyone that has used Github or follows blogs of programmers have probably heard of Github Pages. Hosting a site on GP is also free, plus the site can have a custom domain and be secured with HTTPS. Full Disclosure: I&rsquo;ve heard mixed reviews about Github Pages, but decided to give it a shot.</p>
+
+<p>Being familiar with git and a text editor, I thought this would be a breeze. Luckily, it was!</p>
+
+<p><em>I&rsquo;m going to assume that anyone following this already has git configured on their computer.</em></p>
+
+<h2 id="installing-hugo">Installing Hugo</h2>
+
+<p><strong>For Windows Users:</strong></p>
+
+<ol>
+<li>Create a new folder in your C drive and name it <code>C:\Hugo</code></li>
+<li>In the Hugo folder, create two subfolders named <code>bin</code> and <code>Sites</code></li>
+<li>Download the Windows Hugo package from <a href="https://github.com/spf13/hugo/releases">here</a></li>
+<li>After downloading, extract the files into the newly created <code>bin</code> folder</li>
+<li>Rename the executable <code>hugo.exe</code></li>
+<li>Using the command line, <code>cd</code> into <code>C:\Hugo\bin</code> and set the path by entering <code>set PATH=%PATH%;C:\Hugo\bin</code></li>
+<li>Restart the terminal for the changes to take place</li>
+<li>Check to see it was successful by entering the command <code>hugo help</code></li>
+</ol>
+
+<p><strong>For Mac Users:</strong></p>
+
+<p><em>The easiest way to install Hugo on a Mac, is by utilizing Homebrew. Please install it before hand.</em></p>
+
+<ol>
+<li>Run the command <code>brew update</code> in the terminal (if you had already had Homebrew installed on your machine)</li>
+<li>Run the command <code>brew install hugo</code></li>
+<li>Verify that Hugo was installed successfully by running <code>hugo help</code> (you may need to restart the terminal first)</li>
+</ol>
+
+<h2 id="creating-a-new-site">Creating a New Site</h2>
+
+<p>Setting up a new site with Hugo is pretty straightforward. If you are using Windows, navigate to the subfolder <code>Sites</code> in <code>C:\Hugo</code> using the command line. If you are using MacOS, pick a convenient place and <code>cd</code> into it. I chose to have my site live in my <code>src</code> directory.</p>
+
+<p>Enter the command <code>hugo new site blog</code>. Substitute <code>blog</code> with whatever you want to name your site. This should create a scaffold in whatever directory you ran the previous command in.</p>
+
+<p>Next, you can install a theme of your choice. For this example, I will use the <a href="http://themes.gohugo.io/hugo-theme-cactus-plus/">theme</a> that I&rsquo;m currently using on this site. To install a theme, <code>cd</code> into the <code>themes</code> folder inside of your site. Run the command <code>git clone https://github.com/nodejh/hugo-theme-cactus-plus.git</code>, substituting the link for the Git repository to the theme you have chosen. Take a look at the <code>config.toml</code> file in the theme&rsquo;s repository for all the specifications you can modify. For example, in <code>hugo-theme-cactus-plus</code> I can specify my social media handlers, the title of the site, bio, etc. Whether you specify those or not is totally up to you. However, you do need to specify the <code>baseurl</code>, <code>themesDir</code>, and <code>theme</code>. For <code>baseurl</code>, I put <code>/</code> as the theme did not render properly if I put the url to my site. For <code>themesDir</code>, I put <code>themes/</code>, and for <code>theme</code> I put the name of the theme as it is in the <code>themes</code> folder. In my case, that was <code>hugo-theme-cactus-plus</code>.</p>
+
+<p>If all went well, you should be able to enter the command <code>hugo server -w</code> and go to <code>localhost:1313</code> to see your new site. It may take a minute for everything to render properly.</p>
+
+<h2 id="setting-up-new-repositories">Setting Up New Repositories</h2>
+
+<p>To host our new site using Github Pages, we actually have to create two repositories on our Github profile. One will host all of the Hugo content while the other will host the site and be placed inside the other repository.</p>
+
+<p>Create the first repository and name it <code>&lt;USERNAME&gt;.github.io</code> and check the &ldquo;Initialize this repository with a README&rdquo; box. Then create the second repository and name it anything you like (preferably it will be what you named your site folder). <code>cd</code> into your project folder and enter these commands:</p>
+
+<pre><code>$ git init
+
+$ git remote add origin git@github.com:&lt;USERNAME&gt;/blog.git
+</code></pre>
+
+<p>We should now be able to serve our site locally. Enter <code>hugo server -t hugo-theme-cactus-plus</code> in the terminal, substituting the theme with the one you chose for your site. You should see your site if you go to <code>localhost:1313</code>. Stop the server. Remove the public folder that was generated with <code>rm -rf public</code>. Then enter this command:</p>
+
+<pre><code>$ git submodule add -b master git@github.com:&lt;USERNAME&gt;/&lt;USERNAME&gt;.github.io.git public
+</code></pre>
+
+<p>This command should have added the static site into the <code>public</code> folder.</p>
+
+<p>Before deploying the site, add all the files from the main <code>blog</code> repository and push it up to Github.</p>
+
+<pre><code>$ git add .
+
+$ git push -u origin master
+</code></pre>
+
+<p>Finally, to deploy the site first set the theme, add all the files from the <code>public</code> folder, make a commit, and push up to the <code>&lt;USERNAME&gt;.github.io</code> repository.</p>
+
+<pre><code>$ hugo -t hugo-theme-cactus-plus
+$ cd public
+$ git add .
+$ git commit -m &quot;deploy site&quot;
+$ git push origin master
+</code></pre>
+
+<p>There may be a delay, but after a few moments you should be able to see your new site at <code>&lt;USERNAME&gt;.github.io</code>!</p>
+
+<h2 id="automate-deployment">Automate Deployment</h2>
+
+<p>Optionally, you could create a shell script to deploy the site for you instead of having to do the last part every time you change the site.
+To do so, create a new file called <code>deploy.sh</code> and add the following to it (this is straight from the Hugo tutorial):</p>
+
+<pre><code>#!/bin/bash
+
+echo -e &quot;\033[0;32mDeploying updates to GitHub...\033[0m&quot;
+
+# Build the project.
+hugo # if using a theme, replace by `hugo -t &lt;yourtheme&gt;`
+
+# Go To Public folder
+cd public
+# Add changes to git.
+git add -A
+
+# Commit changes.
+msg=&quot;rebuilding site `date`&quot;
+if [ $# -eq 1 ]
+  then msg=&quot;$1&quot;
+fi
+git commit -m &quot;$msg&quot;
+
+# Push source and build repos.
+git push origin master
+
+# Come Back
+cd ..
+</code></pre>
+
+<p>Make the following script an executable by entering <code>chmod +x deploy.sh</code>. Now to deploy your site, all you would need to do is enter <code>./deploy.sh</code> in the terminal. Note: This script only adds changes from the <code>public</code> folder, so if had modified something in the <code>blog</code> folder you would manually need to push that up to Github.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'arlomurray-github-io'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/arlomurray">
+        circlegithub
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/arloemurray">
+        circletwitterbird
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> Arlo Murray
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="/js/jquery-2.2.4.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

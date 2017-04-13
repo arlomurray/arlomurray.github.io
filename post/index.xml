@@ -10,12 +10,129 @@
     <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>First Post</title>
-      <link>/post/firstpost/</link>
+      <title>Setting up a blog with Github Pages and Hugo</title>
+      <link>/post/setting-blog/</link>
       <pubDate>Wed, 12 Apr 2017 12:53:14 +0900</pubDate>
       
-      <guid>/post/firstpost/</guid>
-      <description>&lt;p&gt;Hello, world!&lt;/p&gt;
+      <guid>/post/setting-blog/</guid>
+      <description>
+
+&lt;p&gt;As the topic is still fresh on my mind from creating this blog, I thought I would write a quick post on how others can create their own.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-is-hugo-and-github-pages&#34;&gt;What is Hugo and Github Pages&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/arlomurray/blog-hugo/public/images/hugo.png&#34; alt=&#34;Hugo&#34; title=&#34;Hugo Platform&#34; /&gt;
+Hugo is a static website generator, which makes it ideal for creating things like blogs, personal websites, or any other site that does not require dynamic content. It is very simple to install and configure on any operating system, be hosted anywhere, is incredibly fast, &lt;em&gt;and&lt;/em&gt; it is written in the Go programming language. Being quite a avid fan/user of Go, I was naturally drawn to the platform. It also seemed easier to use than Wordpress, which I&amp;rsquo;ve had my fair share of bouts with in the past. On top of all that, Hugo is a free platform.&lt;/p&gt;
+
+&lt;p&gt;However, since Hugo only generates static pages, the site needs to be hosted by another service. (Hugo actually can serve websites, but it does not seem to be a popular option.) In my case, this is where Github Pages comes into play. Anyone that has used Github or follows blogs of programmers have probably heard of Github Pages. Hosting a site on GP is also free, plus the site can have a custom domain and be secured with HTTPS. Full Disclosure: I&amp;rsquo;ve heard mixed reviews about Github Pages, but decided to give it a shot.&lt;/p&gt;
+
+&lt;p&gt;Being familiar with git and a text editor, I thought this would be a breeze. Luckily, it was!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;I&amp;rsquo;m going to assume that anyone following this already has git configured on their computer.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-hugo&#34;&gt;Installing Hugo&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;For Windows Users:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Create a new folder in your C drive and name it &lt;code&gt;C:\Hugo&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;In the Hugo folder, create two subfolders named &lt;code&gt;bin&lt;/code&gt; and &lt;code&gt;Sites&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Download the Windows Hugo package from &lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;here&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;After downloading, extract the files into the newly created &lt;code&gt;bin&lt;/code&gt; folder&lt;/li&gt;
+&lt;li&gt;Rename the executable &lt;code&gt;hugo.exe&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Using the command line, &lt;code&gt;cd&lt;/code&gt; into &lt;code&gt;C:\Hugo\bin&lt;/code&gt; and set the path by entering &lt;code&gt;set PATH=%PATH%;C:\Hugo\bin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Restart the terminal for the changes to take place&lt;/li&gt;
+&lt;li&gt;Check to see it was successful by entering the command &lt;code&gt;hugo help&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;For Mac Users:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The easiest way to install Hugo on a Mac, is by utilizing Homebrew. Please install it before hand.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Run the command &lt;code&gt;brew update&lt;/code&gt; in the terminal (if you had already had Homebrew installed on your machine)&lt;/li&gt;
+&lt;li&gt;Run the command &lt;code&gt;brew install hugo&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Verify that Hugo was installed successfully by running &lt;code&gt;hugo help&lt;/code&gt; (you may need to restart the terminal first)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;creating-a-new-site&#34;&gt;Creating a New Site&lt;/h2&gt;
+
+&lt;p&gt;Setting up a new site with Hugo is pretty straightforward. If you are using Windows, navigate to the subfolder &lt;code&gt;Sites&lt;/code&gt; in &lt;code&gt;C:\Hugo&lt;/code&gt; using the command line. If you are using MacOS, pick a convenient place and &lt;code&gt;cd&lt;/code&gt; into it. I chose to have my site live in my &lt;code&gt;src&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;p&gt;Enter the command &lt;code&gt;hugo new site blog&lt;/code&gt;. Substitute &lt;code&gt;blog&lt;/code&gt; with whatever you want to name your site. This should create a scaffold in whatever directory you ran the previous command in.&lt;/p&gt;
+
+&lt;p&gt;Next, you can install a theme of your choice. For this example, I will use the &lt;a href=&#34;http://themes.gohugo.io/hugo-theme-cactus-plus/&#34;&gt;theme&lt;/a&gt; that I&amp;rsquo;m currently using on this site. To install a theme, &lt;code&gt;cd&lt;/code&gt; into the &lt;code&gt;themes&lt;/code&gt; folder inside of your site. Run the command &lt;code&gt;git clone https://github.com/nodejh/hugo-theme-cactus-plus.git&lt;/code&gt;, substituting the link for the Git repository to the theme you have chosen. Take a look at the &lt;code&gt;config.toml&lt;/code&gt; file in the theme&amp;rsquo;s repository for all the specifications you can modify. For example, in &lt;code&gt;hugo-theme-cactus-plus&lt;/code&gt; I can specify my social media handlers, the title of the site, bio, etc. Whether you specify those or not is totally up to you. However, you do need to specify the &lt;code&gt;baseurl&lt;/code&gt;, &lt;code&gt;themesDir&lt;/code&gt;, and &lt;code&gt;theme&lt;/code&gt;. For &lt;code&gt;baseurl&lt;/code&gt;, I put &lt;code&gt;/&lt;/code&gt; as the theme did not render properly if I put the url to my site. For &lt;code&gt;themesDir&lt;/code&gt;, I put &lt;code&gt;themes/&lt;/code&gt;, and for &lt;code&gt;theme&lt;/code&gt; I put the name of the theme as it is in the &lt;code&gt;themes&lt;/code&gt; folder. In my case, that was &lt;code&gt;hugo-theme-cactus-plus&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If all went well, you should be able to enter the command &lt;code&gt;hugo server -w&lt;/code&gt; and go to &lt;code&gt;localhost:1313&lt;/code&gt; to see your new site. It may take a minute for everything to render properly.&lt;/p&gt;
+
+&lt;h2 id=&#34;setting-up-new-repositories&#34;&gt;Setting Up New Repositories&lt;/h2&gt;
+
+&lt;p&gt;To host our new site using Github Pages, we actually have to create two repositories on our Github profile. One will host all of the Hugo content while the other will host the site and be placed inside the other repository.&lt;/p&gt;
+
+&lt;p&gt;Create the first repository and name it &lt;code&gt;&amp;lt;USERNAME&amp;gt;.github.io&lt;/code&gt; and check the &amp;ldquo;Initialize this repository with a README&amp;rdquo; box. Then create the second repository and name it anything you like (preferably it will be what you named your site folder). &lt;code&gt;cd&lt;/code&gt; into your project folder and enter these commands:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git init
+
+$ git remote add origin git@github.com:&amp;lt;USERNAME&amp;gt;/blog.git
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We should now be able to serve our site locally. Enter &lt;code&gt;hugo server -t hugo-theme-cactus-plus&lt;/code&gt; in the terminal, substituting the theme with the one you chose for your site. You should see your site if you go to &lt;code&gt;localhost:1313&lt;/code&gt;. Stop the server. Remove the public folder that was generated with &lt;code&gt;rm -rf public&lt;/code&gt;. Then enter this command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git submodule add -b master git@github.com:&amp;lt;USERNAME&amp;gt;/&amp;lt;USERNAME&amp;gt;.github.io.git public
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This command should have added the static site into the &lt;code&gt;public&lt;/code&gt; folder.&lt;/p&gt;
+
+&lt;p&gt;Before deploying the site, add all the files from the main &lt;code&gt;blog&lt;/code&gt; repository and push it up to Github.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git add .
+
+$ git push -u origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, to deploy the site first set the theme, add all the files from the &lt;code&gt;public&lt;/code&gt; folder, make a commit, and push up to the &lt;code&gt;&amp;lt;USERNAME&amp;gt;.github.io&lt;/code&gt; repository.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ hugo -t hugo-theme-cactus-plus
+$ cd public
+$ git add .
+$ git commit -m &amp;quot;deploy site&amp;quot;
+$ git push origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There may be a delay, but after a few moments you should be able to see your new site at &lt;code&gt;&amp;lt;USERNAME&amp;gt;.github.io&lt;/code&gt;!&lt;/p&gt;
+
+&lt;h2 id=&#34;automate-deployment&#34;&gt;Automate Deployment&lt;/h2&gt;
+
+&lt;p&gt;Optionally, you could create a shell script to deploy the site for you instead of having to do the last part every time you change the site.
+To do so, create a new file called &lt;code&gt;deploy.sh&lt;/code&gt; and add the following to it (this is straight from the Hugo tutorial):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot;
+
+# Build the project.
+hugo # if using a theme, replace by `hugo -t &amp;lt;yourtheme&amp;gt;`
+
+# Go To Public folder
+cd public
+# Add changes to git.
+git add -A
+
+# Commit changes.
+msg=&amp;quot;rebuilding site `date`&amp;quot;
+if [ $# -eq 1 ]
+  then msg=&amp;quot;$1&amp;quot;
+fi
+git commit -m &amp;quot;$msg&amp;quot;
+
+# Push source and build repos.
+git push origin master
+
+# Come Back
+cd ..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Make the following script an executable by entering &lt;code&gt;chmod +x deploy.sh&lt;/code&gt;. Now to deploy your site, all you would need to do is enter &lt;code&gt;./deploy.sh&lt;/code&gt; in the terminal. Note: This script only adds changes from the &lt;code&gt;public&lt;/code&gt; folder, so if had modified something in the &lt;code&gt;blog&lt;/code&gt; folder you would manually need to push that up to Github.&lt;/p&gt;
 </description>
     </item>
     
