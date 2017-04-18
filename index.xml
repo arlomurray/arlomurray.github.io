@@ -6,8 +6,239 @@
     <description>Recent content on Arlo Murray</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 12 Apr 2017 12:53:14 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 16 Apr 2017 12:53:14 +0900</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Web Scraping Go Docs for Error Messages</title>
+      <link>/post/scraper/</link>
+      <pubDate>Sun, 16 Apr 2017 12:53:14 +0900</pubDate>
+      
+      <guid>/post/scraper/</guid>
+      <description>
+
+&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;
+
+&lt;p&gt;Earlier in the year, there was quite a kerfuffle surrounding the data archived on government sites. With the new administration, scientists and concerned citizens were worried about what would happen to the information on government websites and started to salvage as much of it as they could. Events started being organized, primarily at universities, where people would volunteer to scour these sites for important data. This process is known as &lt;em&gt;web scraping&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;The idea of making a web scraper has since stayed in my head. The problem was, I didn&amp;rsquo;t know what I wanted it to be able to do. There are obviously easy programs one could build, but I wanted to make one that was at least semi-cool. Yesterday, when I was thinking back on some especially tricky error messages I&amp;rsquo;ve come across, I thought of a worthy enough idea. Essentially, the web scraper would scour the Go standard library files for the error message I had encountered. Yes, Google does the same thing, but this (in my mind) is a much cooler way to go about it.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-the-web-scraper-will-do&#34;&gt;What the Web Scraper will do&lt;/h2&gt;
+
+&lt;p&gt;The process the program will execute will be as follows:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Take in the error message as an argument&lt;/li&gt;
+&lt;li&gt;Get the Go Docs homepage&lt;/li&gt;
+&lt;li&gt;Scrape the documentation for source file links&lt;/li&gt;
+&lt;li&gt;For each link, search the file associated with the link for the error message&lt;/li&gt;
+&lt;li&gt;Return the line number of the error message&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Go documentation, as you probably know, is incredibly well organized and formatted. The standard library packages in particular are very easy to navigate and search through. Links to each of the package files can be found at &lt;a href=&#34;https://golang.org/src&#34;&gt;https://golang.org/src&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;&lt;img src=&#34;/images/scraper1.png&#34; style=&#34;width:100%;&#34;&gt;&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;All the source files of each package are also listed under &lt;a href=&#34;https://golang.org/src/&#34;&gt;https://golang.org/src/&lt;/a&gt;&lt;PACKAGENAME&gt;/.&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;&lt;img src=&#34;/images/scraper2.png&#34; style=&#34;width:100%;&#34;&gt;&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;The docs are also organized in a way that when a function&amp;rsquo;s link is clicked, the user will be lead to the line number the function appears in the source file. That url looks like this: &lt;a href=&#34;https://golang.org/src/fmt/print.go#L256&#34;&gt;https://golang.org/src/fmt/print.go#L256&lt;/a&gt;, where &amp;ldquo;#L&amp;rdquo; specifies the line number. However, files from non-standard library packages are not stored on golang.org. This applies to Go&amp;rsquo;s &amp;ldquo;x&amp;rdquo; packages as well. Due to this, the web scraper will only be capable of searching through standard lib files.&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;&lt;img src=&#34;/images/scraper3.png&#34; style=&#34;width:100%;&#34;&gt;&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;The scraper is also going to assume that the user knows which package the error message came from. Although, it wouldn&amp;rsquo;t require much more code to implement that functionality. The package name, along with the error message, will be taken in as a command line argument.&lt;/p&gt;
+
+&lt;h2 id=&#34;opening-the-web-page&#34;&gt;Opening the Web Page&lt;/h2&gt;
+
+&lt;p&gt;Using the &lt;code&gt;Get&lt;/code&gt; function from the &amp;ldquo;net/http&amp;rdquo; package, we&amp;rsquo;ll make a call to golang.org/src/&lt;PACKAGE NAME&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;resp, err := http.Get(&amp;quot;https://golang.org/src/&amp;quot; + os.Args[1])
+if err != nil {
+  log.Fatal(&amp;quot;could not get package files&amp;quot;)
+}
+defer resp.Body.Close()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;tokenizer&#34;&gt;Tokenizer&lt;/h2&gt;
+
+&lt;p&gt;To do the actual scraping, we can use one of Go&amp;rsquo;s &amp;ldquo;x&amp;rdquo; packages called &lt;a href=&#34;https://godoc.org/golang.org/x/net/html&#34;&gt;net/html&lt;/a&gt;. With this package, our program will be able to parse the HTML on a certain web page and search for all of the &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt; HTML tags.The &lt;code&gt;NewTokenizer&lt;/code&gt; method will do the searching. It creates a &lt;em&gt;tokenizer&lt;/em&gt; for the HTML, which categorizes the HTML into token types. Tokens are HTML tags. These tokens can then in turn, have their attributes evaluated.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Types of Tokens HTML tags can be evaluated as&lt;/em&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;const (
+  // ErrorToken means that an error occurred during tokenization.
+  ErrorToken TokenType = iota
+  // TextToken means a text node.
+  TextToken
+  // A StartTagToken looks like &amp;lt;a&amp;gt;.
+  StartTagToken
+  // An EndTagToken looks like &amp;lt;/a&amp;gt;.
+  EndTagToken
+  // A SelfClosingTagToken tag looks like &amp;lt;br/&amp;gt;.
+  SelfClosingTagToken
+  // A CommentToken looks like &amp;lt;!--x--&amp;gt;.
+  CommentToken
+  // A DoctypeToken looks like &amp;lt;!DOCTYPE x&amp;gt;
+  DoctypeToken
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Since the program will be searching for &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt; tags, it will technically be looking for &lt;code&gt;StartTagToken&lt;/code&gt;s.  The program could search through a web page in a for loop, however, if the page for some reason does not have a link, we would rather have the the program end instead of running infinitely. Coming across an &lt;code&gt;ErrorToken&lt;/code&gt; would be a good indication of the program hitting the end of the web page.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;tizer := html.NewTokenizer(resp.Body)
+var urls []string
+loop:
+for {
+  token := tizer.Next()
+  switch {
+  case token == html.ErrorToken:
+    break loop
+  case token == html.StartTagToken:
+    found := tizer.Token()
+    if found.Data != &amp;quot;a&amp;quot; {
+      continue
+    }
+    for _, a := range found.Attr {
+      if a.Key == &amp;quot;href&amp;quot; {
+        urls = append(urls, a.Val)
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;NewTokenizer&lt;/code&gt; takes in a &lt;code&gt;io.Reader&lt;/code&gt; as it&amp;rsquo;s parameter, so we are able to pass in the HTTP response body. &lt;code&gt;NewTokenizer&lt;/code&gt; only splits the HTMl into tokens; in order to iterate over each token, the &lt;code&gt;Next()&lt;/code&gt; method from &amp;ldquo;net/html&amp;rdquo; package is used. Each token has &lt;a href=&#34;https://godoc.org/golang.org/x/net/html#Token&#34;&gt;fields&lt;/a&gt; that can be referenced, and from the fields we can extract the link to each file in a particular package. In the program, we use a for loop to iterate over the token&amp;rsquo;s fields until we come across the &lt;code&gt;href&lt;/code&gt; field. Once we have the value of &lt;code&gt;href&lt;/code&gt;, we append it to the slice of URLs that was initialized outside of the for loop and that slice can be sent to another process which iterates over each one in an attempt to find the error message.&lt;/p&gt;
+
+&lt;h2 id=&#34;finding-the-error-message&#34;&gt;Finding the Error Message&lt;/h2&gt;
+
+&lt;p&gt;To read the contents of each file, the body should be scanned line by line. We can do that by using the scanner from package &amp;ldquo;bufio&amp;rdquo;. While scanning the body, we can call the &lt;code&gt;Contains()&lt;/code&gt; method from package &amp;ldquo;strings&amp;rdquo; to search for the error message. If the program comes across it, the line will be tokenized. This time, we are searching for the line number to return to the user. If you look at the file&amp;rsquo;s HTML, you will see that each line number is placed in a set of &lt;code&gt;&amp;lt;span&amp;gt;&lt;/code&gt; tags and is also set as the &lt;code&gt;id&lt;/code&gt; attribute. Once we have that, the program can open a browser window to the URL specified with the line number.&lt;/p&gt;
+
+&lt;p&gt;Note: Having the scanner finish scanning the whole body, instead of stopping when it comes across the first instance of an error message is pretty helpful if whatever the user is searching for shows up more than once in the file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;for _ ,url := range urls {
+  resp, err := http.Get(&amp;quot;https://golang.org/src/&amp;quot; + os.Args[1] + &amp;quot;/&amp;quot; + url)
+  if err != nil {
+    fmt.Println(&amp;quot;could not get package file&amp;quot;)
+  }
+  defer resp.Body.Close()
+
+  scanner := bufio.NewScanner(resp.Body)
+  for scanner.Scan() {
+    line := scanner.Text()
+    if strings.Contains(line, os.Args[2]) {
+      tizer := html.NewTokenizer(strings.NewReader(line))
+      token := tizer.Next()
+
+      switch {
+      case token == html.ErrorToken:
+        break
+      case token == html.StartTagToken:
+        found := tizer.Token()
+        if found.Data != &amp;quot;span&amp;quot; {
+          continue
+        }
+
+        for _, a := range found.Attr {
+          if a.Key == &amp;quot;id&amp;quot; {
+            cmd := exec.Command(&amp;quot;open&amp;quot;, (resp.Request.URL).String() + &amp;quot;#&amp;quot; + a.Val)
+            cmd.Run()
+          }
+        }
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;separating-the-program-into-functions&#34;&gt;Separating the Program Into Functions&lt;/h2&gt;
+
+&lt;p&gt;Aside from &lt;code&gt;func main&lt;/code&gt;, the program could be split into two other functions. One function could handle scraping the &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt; tags from the package&amp;rsquo;s source page, while the other could handle searching for the error messages from the file itself.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package main
+
+import (
+  &amp;quot;golang.org/x/net/html&amp;quot;
+  &amp;quot;net/http&amp;quot;
+  &amp;quot;os&amp;quot;
+  &amp;quot;log&amp;quot;
+  &amp;quot;os/exec&amp;quot;
+  &amp;quot;bufio&amp;quot;
+  &amp;quot;strings&amp;quot;
+)
+
+func main() {
+    urls := crawl()
+    crawlEach(urls)
+}
+func crawl() []string {
+  resp, err := http.Get(&amp;quot;https://golang.org/src/&amp;quot; + os.Args[1])
+  if err != nil {
+    log.Fatal(&amp;quot;could not get package files&amp;quot;)
+  }
+
+  defer resp.Body.Close()
+  tizer := html.NewTokenizer(resp.Body)
+  var urls []string
+  loop:
+  for {
+    token := tizer.Next()
+    switch {
+    case token == html.ErrorToken:
+      break loop
+    case token == html.StartTagToken:
+      found := tizer.Token()
+      if found.Data != &amp;quot;a&amp;quot; {
+        continue
+      }
+      for _, a := range found.Attr {
+        if a.Key == &amp;quot;href&amp;quot; {
+          urls = append(urls, a.Val)
+        }
+      }
+    }
+  }
+}
+func crawlEach(urls []string) {
+  for _ ,url := range urls {
+    resp, err := http.Get(&amp;quot;https://golang.org/src/&amp;quot; + os.Args[1] + &amp;quot;/&amp;quot; + url)
+    if err != nil {
+      log.Fatal(&amp;quot;could not get package file&amp;quot;)
+    }
+    defer resp.Body.Close()
+
+    scanner := bufio.NewScanner(resp.Body)
+    for scanner.Scan() {
+      line := scanner.Text()
+      if strings.Contains(line, os.Args[2]) {
+        tizer := html.NewTokenizer(strings.NewReader(line))
+        token := tizer.Next()
+
+        switch {
+        case token == html.ErrorToken:
+          break
+        case token == html.StartTagToken:
+          found := tizer.Token()
+          if found.Data != &amp;quot;span&amp;quot; {
+            continue
+          }
+
+          for _, a := range found.Attr {
+            if a.Key == &amp;quot;id&amp;quot; {
+              cmd := exec.Command(&amp;quot;open&amp;quot;, (resp.Request.URL).String() + &amp;quot;#&amp;quot; + a.Val)
+              cmd.Run()
+            }
+          }
+        }
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There are quite a few bugs with this code, on top of being unorganized. For instance, if a user were to search for &amp;ldquo;if&amp;rdquo; in the source files, the program would pick up possibly hundreds of results, and if it were to try and open a new browser window for every instance, the result would be total mayhem. Overall though, it&amp;rsquo;s a pretty cool way to search for error messages. Let me know what you think in the comments, or shoot me an &lt;a href=&#34;mailto:arloemurray@gmail.com?Subject=Web%20scraper&#34;&gt;email&lt;/a&gt;. The code can also be viewed on my &lt;a href=&#34;https://github.com/arlomurray/godoc-scraper&#34;&gt;Github&lt;/a&gt; profile.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Setting up a blog with Github Pages and Hugo</title>
